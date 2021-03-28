@@ -60,7 +60,7 @@ export default {
     },
     /**
      * Emit an event that the county has been updated
-     * @parameter   {CensusCountyReference}      countyReference    County information to return
+     * @param   {CensusCountyReference}      countyReference    County information to return
      */
     returnCounty(countyReference) {
       console.log(`In returnCounty with ${countyReference.FullName}`);
