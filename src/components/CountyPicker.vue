@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { CensusCountyEsriClient } from "./CensusCountyEsriClient";
+import { CensusCountyClient } from "./CensusCountyClient";
 
 export default {
   name: 'CountyPicker',
@@ -38,7 +38,7 @@ export default {
     }
   },
   mounted() {
-    this.countyClient = new CensusCountyEsriClient('https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1');
+    this.countyClient = new CensusCountyClient('https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1');
   },
   methods: {
     /**

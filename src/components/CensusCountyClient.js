@@ -6,7 +6,7 @@ import Point from '@arcgis/core/geometry/Point';
 /**
  * API client to retrieve county information from latitude and longitude
  */
- export class CensusCountyEsriClient {
+ export class CensusCountyClient {
     constructor (url) {
         this.featureLayer = new FeatureLayer({url: url});
         this.baseUrl = url;  // https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1
@@ -79,7 +79,7 @@ import Point from '@arcgis/core/geometry/Point';
         }
         return returnArray;
     }
-    
+
     /**
      * Take one feature from the service and turn it into a CensusCountyReference
      * @param {object} feature     One feature from the map service

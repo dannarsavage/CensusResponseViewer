@@ -9,7 +9,7 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { MapExtent } from "./MapExtent"
 import { CensusCountyReference } from "./CensusCountyReference"
-import { CensusCountyEsriClient } from './CensusCountyEsriClient';
+import { CensusCountyClient } from './CensusCountyClient';
 
 export default {
   name: 'Map',
@@ -21,7 +21,8 @@ export default {
   data() {
     return {
       map: null,
-      countyLayerGroup: null
+      countyLayerGroup: null,
+      countyClient: null
     }
   },
   mounted() {
@@ -32,7 +33,7 @@ export default {
     }).addTo(this.map);
     this.countyLayerGroup = L.layerGroup().addTo(this.map);
     this.setView(new MapExtent());
-    this.countyClient = new CensusCountyEsriClient('https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1');
+    this.countyClient = new CensusCountyClient('https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1');
   },
   watch: {
     mapExtent: function (val) {
