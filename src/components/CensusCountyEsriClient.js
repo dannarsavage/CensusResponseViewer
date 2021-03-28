@@ -64,9 +64,9 @@ import Point from '@arcgis/core/geometry/Point';
      * @param {Boolean} returnGeometry  Whether or not to return geometries (default to false since they're expensive)
      */
     async getCountiesByName (namePortion, startsWith = true, returnGeometry = false) {
-        const wildcard = startsWith ? '' : '%25';
+        const wildcard = startsWith ? '' : '%';
         const query = this.featureLayer.createQuery();
-        query.where = `UPPER(NAME)+LIKE+'${wildcard}${ namePortion.toUpperCase() }%25'`;
+        query.where = `UPPER(NAME) LIKE '${wildcard}${ namePortion.toUpperCase() }%'`;
         query.outFields = ['COUNTY', 'STATE', 'NAME'];
         query.returnGeometry = returnGeometry
         query.outSpatialReference = { wkid: 4326 };
