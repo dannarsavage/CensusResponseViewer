@@ -1,4 +1,5 @@
-# census-responses
+# Census Response Viewer
+A trivial project for trying out JavaScript libraries & techniques.
 
 ## Project setup
 ```
