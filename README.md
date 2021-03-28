@@ -21,5 +21,11 @@ npm run build
 npm run lint
 ```
 
+### Run tests
+```
+npm run test
+```
+Note that this project uses jest. This framework seems not to play well with Esri JSAPI, so the tests of classes that involve that API fail. It's on my to-do list to address this. I'll gladly entertain a pull request.
+
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
