@@ -10,10 +10,7 @@
     </div>
     <div id="MapDiv">
       <Map 
-        v-if="mapExtent"
-        v-bind:mapExtent="mapExtent"
-        v-bind:countyReference="countyReference"
-        v-bind:title="mapTitle" />
+        v-bind:countyReference="countyReference" />
     </div>
   </div>
 </template>
@@ -22,7 +19,6 @@
 import Map from './components/Map.vue'
 import CountyPicker from './components/CountyPicker.vue'
 import { MapExtent } from "./components/MapExtent"
-//import { CensusCountyReference } from './components/CensusCountyReference'
 
 export default {
   data() {
@@ -42,9 +38,6 @@ export default {
   computed: {
     mapExtent: function () {
       return new MapExtent (this.latitude, this.longitude, this.zoomLevel);
-    // },
-    // countyReference: function () {
-    //   return new CensusCountyReference('stateId', 'countyId', 'Valley County', 'ID');
     }
   },
   methods: {
@@ -92,8 +85,6 @@ div#CountyDiv {
 }
 
 div#MapDiv {
-/*  display: none;
-  position: absolute; */
   z-index: 0;
 }
 </style>

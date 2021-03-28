@@ -41,6 +41,9 @@ export default {
     this.countyClient = new CensusCountyClient('https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1');
   },
   methods: {
+    /**
+     * Search for counties based on the contents of the text input
+     */
     async searchForCounties() {
       this.clearWarnings();
       this.clearCountyList();
@@ -55,6 +58,10 @@ export default {
         this.warnNoCountiesFound();
       }
     },
+    /**
+     * Emit an event that the county has been updated
+     * @parameter   {CensusCountyReference}      countyReference    County information to return
+     */
     returnCounty(countyReference) {
       console.log(`In returnCounty with ${countyReference.FullName}`);
       this.clearCountyList();
@@ -64,15 +71,28 @@ export default {
       this.stateAbbreviation = countyReference.State;
       this.$emit('update:countyReference', countyReference);
     },
+    /**
+     * Remove all counties from the county list 
+     * TODO:  Should likely also have a way to collapse the list without purging the array
+     */
     clearCountyList () {
         this.countyList = [];
     },
+    /**
+     * Warn the user that the search requires at least two characters
+     */
     warnMinimumSearchLength () {
         this.$refs.AtLeastTwoLetters.style.display = "block";
     },
+    /**
+     * Warn the user that the search returned no results
+     */
     warnNoCountiesFound () {
         this.$refs.NoCountiesFound.style.display = "block";
     },
+    /**
+     * Clear warnings before performing another search
+     */
     clearWarnings () {
       this.$refs.NoCountiesFound.style.display = "none";
       this.$refs.AtLeastTwoLetters.style.display = "none";
