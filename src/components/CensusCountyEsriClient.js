@@ -79,22 +79,7 @@ import Point from '@arcgis/core/geometry/Point';
         }
         return returnArray;
     }
-
-    /**
-     * Take one feature from the service and turn it into a CensusCountyReference
-     * @param {object} apiReturn     One feature from the map service
-     */
-    async makeReferenceFromApiReturn (apiReturn) {
-        const stateName = await this.getStateNameByStateId(apiReturn.STATE);
-        return new CensusCountyReference(
-            apiReturn.STATE,
-            apiReturn.COUNTY,
-            apiReturn.NAME,
-            stateName
-        );
-    }
-
-
+    
     /**
      * Take one feature from the service and turn it into a CensusCountyReference
      * @param {object} feature     One feature from the map service
