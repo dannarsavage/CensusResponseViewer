@@ -38,14 +38,6 @@ export default {
     Chart
   },
   methods: {
-  },
-  watch: {
-    chosenCounty: {
-      handler (new_value) {
-        console.log(`In App's countyReference watcher with ${new_value.FullName}`);
-      },
-      deep: true
-    }
   }
 }
 </script>
