@@ -1,5 +1,6 @@
 <template>
   <div class="chartContainer">
+    <div id="title"></div>
     <div id="chart"></div>
   </div>
 </template>
@@ -40,6 +41,7 @@ export default {
     setCounty: async function (val) {
       // TODO: Get data from the census for the county and use it to update the chart
       this.responseInfo = await this.responseClient.getResponseRateForCountyAndState(val);
+      document.getElementById("title").innerText = `2020 Census Response Rates for ${val.FullName}`;
       await this.setChartData(this.responseInfo);
       //console.log(`${this.responseInfo.Name}: ${this.responseInfo.CumulativeTotalResponseRate}`);
     },
@@ -94,6 +96,15 @@ h1 {
 .chartContainer {
   background-color: white;
   padding: 10px;
+  z-index: inherit;
+}
+
+#title {
+  color: navy;
+  font-size: 16px;
+  font-weight: bold;
+  width: 100%;
+  min-height: 25px;
   z-index: inherit;
 }
 

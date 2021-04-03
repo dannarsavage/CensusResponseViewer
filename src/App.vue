@@ -85,10 +85,10 @@ div#MapDiv {
 }
 
 div#ChartDiv {
+  border: 1px solid gray;
   position: absolute;
-  width: 500px;
-  height: 5000px;
-  left: 42vw;
+  width: 45vw;
+  left: 49vw;
   top: 100px;
   z-index: 500;
 }
