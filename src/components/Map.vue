@@ -48,15 +48,17 @@ export default {
     },
     setCounty: async function (val) {
       this.clearCounties();
-      const countyReturn = await this.countyClient.getCountyByStateAndCountyId (val.StateId, val.CountyId, true);
-      // TODO: Do the work of converting from an Esri geometry to a leaflet geometry somewhere else
-      const ring = countyReturn.Shape.rings[0];
-      const latlngs = [];
-      ring.forEach(element => {
-        latlngs.push([element[1],element[0]]);
-      });
-      const polygon = L.polygon(latlngs, {color: 'red'}).addTo(this.countyLayerGroup);
-      this.map.flyToBounds(polygon.getBounds());
+      if (val.Shape ===null) {
+        const countyReturn = await this.countyClient.getCountyByStateAndCountyId (val.StateId, val.CountyId, true);
+        // TODO: Do the work of converting from an Esri geometry to a leaflet geometry somewhere else
+        const ring = countyReturn.Shape.rings[0];
+        const latlngs = [];
+        ring.forEach(element => {
+          latlngs.push([element[1],element[0]]);
+        });
+        val.Shape = L.polygon(latlngs, {color: 'red'}).addTo(this.countyLayerGroup);
+      }
+      this.map.flyToBounds(val.Shape.getBounds());
     }
   },
   beforeDestroy() {
