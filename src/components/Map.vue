@@ -13,7 +13,6 @@ import { CensusCountyClient } from './CensusCountyClient';
 export default {
   name: 'Map',
   props: {
-    title: String,
     countyReference: CensusCountyReference
   },
   data() {
