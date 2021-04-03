@@ -7,7 +7,6 @@
 <script>
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { MapExtent } from "./MapExtent";
 import { CensusCountyReference } from "./CensusCountyReference";
 import { CensusCountyClient } from './CensusCountyClient';
 
@@ -15,7 +14,6 @@ export default {
   name: 'Map',
   props: {
     title: String,
-    mapExtent: MapExtent,
     countyReference: CensusCountyReference
   },
   data() {
@@ -32,16 +30,10 @@ export default {
         '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(this.map);
     this.countyLayerGroup = L.layerGroup().addTo(this.map);
-    this.setView(new MapExtent());
+    this.map.setView([44,-116.5],3);
     this.countyClient = new CensusCountyClient('https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1');
   },
   watch: {
-    mapExtent: function (val) {
-      console.log(`in mapExtent Watch: ${val}`);
-      if (val) {
-        this.setView(val);
-      }
-    },
     countyReference: async function (val) {
       if (val) {
         this.setCounty(val);
@@ -66,9 +58,6 @@ export default {
       });
       const polygon = L.polygon(latlngs, {color: 'red'}).addTo(this.countyLayerGroup);
       this.map.flyToBounds(polygon.getBounds());
-    },
-    setView: function (mapExtent) {
-        this.map.setView([mapExtent.latitude, mapExtent.longitude], mapExtent.zoomLevel);
     }
   },
   beforeDestroy() {
