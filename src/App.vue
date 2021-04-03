@@ -12,10 +12,15 @@
       <Map 
         v-bind:countyReference="countyReference" />
     </div>
+    <div id="ChartDiv">
+      <Chart 
+        v-bind:countyReference="countyReference" />
+    </div>
   </div>
 </template>
 
 <script>
+import Chart from './components/Chart.vue'
 import Map from './components/Map.vue'
 import CountyPicker from './components/CountyPicker.vue'
 
@@ -28,7 +33,8 @@ export default {
   name: 'App',
   components: {
     Map,
-    CountyPicker
+    CountyPicker,
+    Chart
   },
   methods: {
   },
@@ -76,5 +82,9 @@ div#CountyDiv {
 
 div#MapDiv {
   z-index: 0;
+}
+
+div#ChartDiv {
+  z-index: 500;
 }
 </style>

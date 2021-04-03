@@ -7,8 +7,8 @@
 <script>
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { MapExtent } from "./MapExtent"
-import { CensusCountyReference } from "./CensusCountyReference"
+import { MapExtent } from "./MapExtent";
+import { CensusCountyReference } from "./CensusCountyReference";
 import { CensusCountyClient } from './CensusCountyClient';
 
 export default {
