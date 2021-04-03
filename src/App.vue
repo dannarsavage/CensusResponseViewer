@@ -10,7 +10,7 @@
     </div>
     <div id="MapDiv">
       <Map 
-        v-bind:countyReference="countyReference" />
+        v-bind:countyReference.sync="countyReference" />
     </div>
     <div id="ChartDiv">
       <Chart 

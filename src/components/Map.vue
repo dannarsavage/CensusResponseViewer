@@ -30,6 +30,7 @@ export default {
     }).addTo(this.map);
     this.countyLayerGroup = L.layerGroup().addTo(this.map);
     this.map.setView([44,-116.5],3);
+    this.map.on('click', this.getCountyFromClick);
     this.countyClient = new CensusCountyClient('https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1');
   },
   watch: {
@@ -46,19 +47,43 @@ export default {
         }
       );
     },
-    setCounty: async function (val) {
+    setCounty: async function (countyReference) {
       this.clearCounties();
-      if (val.Shape ===null) {
-        const countyReturn = await this.countyClient.getCountyByStateAndCountyId (val.StateId, val.CountyId, true);
-        // TODO: Do the work of converting from an Esri geometry to a leaflet geometry somewhere else
-        const ring = countyReturn.Shape.rings[0];
-        const latlngs = [];
-        ring.forEach(element => {
-          latlngs.push([element[1],element[0]]);
-        });
-        val.Shape = L.polygon(latlngs, {color: 'red'}).addTo(this.countyLayerGroup);
+//      if (countyReference.Shape === null) {
+        countyReference.Shape = await this.retrieveShape(countyReference);
+  //    }
+      countyReference.Shape.addTo(this.countyLayerGroup);
+      this.map.flyToBounds(countyReference.Shape.getBounds());
+    },
+    retrieveShape: async function(countyReference) {
+      const countyReturn = await this.countyClient.getCountyByStateAndCountyId (
+      countyReference.StateId, countyReference.CountyId, true);
+      // TODO: Do the work of converting from an Esri geometry to a leaflet geometry somewhere else
+      const ring = countyReturn.Shape.rings[0];
+      const latlngs = [];
+      ring.forEach(element => {
+        latlngs.push([element[1],element[0]]);
+      });
+      return L.polygon(latlngs, {color: 'red'});
+    },
+    getCountyFromClick: async function (e) {
+      // TODO: Figure a way to isolate this to single clicks
+      // https://stackoverflow.com/questions/29035896/leaflet-dont-fire-click-event-function-on-doubleclick
+      if (e.originalEvent.altKey || e.originalEvent.ctrlKey || e.originalEvent.shiftKey) {
+        return;
       }
-      this.map.flyToBounds(val.Shape.getBounds());
+      const latitude = e.latlng.lat;
+      const longitude = e.latlng.lng;
+      const countyReturn = await this.countyClient.getCountyAtLatLong (latitude, longitude, true);
+      this.returnCounty(countyReturn);
+    },
+    /**
+     * Emit an event that the county has been updated
+     * @param   {CensusCountyReference}      countyReference    County information to return
+     */
+    returnCounty: function(countyReference) {
+      console.log(`In returnCounty with ${countyReference.FullName}`);
+      this.$emit('update:countyReference', countyReference);
     }
   },
   beforeDestroy() {
