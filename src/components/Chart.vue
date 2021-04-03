@@ -40,7 +40,7 @@ export default {
     setCounty: async function (val) {
       // TODO: Get data from the census for the county and use it to update the chart
       this.responseInfo = await this.responseClient.getResponseRateForCountyAndState(val);
-      await this.updateChartWithData(val);
+      await this.updateChartWithData(this.responseInfo);
       //console.log(`${this.responseInfo.Name}: ${this.responseInfo.CumulativeTotalResponseRate}`);
     },
     updateChartWithData: async function(data) {
