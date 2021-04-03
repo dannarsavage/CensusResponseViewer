@@ -5,16 +5,17 @@
       <div class ="SearchOption" id="CountyDiv">
         Search by county name...
         <CountyPicker
-          v-bind:countyReference.sync="countyReference" />
+          v-bind:countyReference.sync="chosenCounty" />
       </div>
     </div>
     <div id="MapDiv">
       <Map 
-        v-bind:countyReference.sync="countyReference" />
+        v-bind:chosenCountyReference.sync="chosenCounty"
+        v-bind:countyReference.sync="chosenCounty" />
     </div>
     <div id="ChartDiv">
       <Chart 
-        v-bind:countyReference="countyReference" />
+        v-bind:countyReference="chosenCounty" />
     </div>
   </div>
 </template>
@@ -27,7 +28,7 @@ import CountyPicker from './components/CountyPicker.vue'
 export default {
   data() {
     return {
-      countyReference: undefined
+      chosenCounty: undefined
     }
   },
   name: 'App',
@@ -39,7 +40,7 @@ export default {
   methods: {
   },
   watch: {
-    countyReference: {
+    chosenCounty: {
       handler (new_value) {
         console.log(`In App's countyReference watcher with ${new_value.FullName}`);
       },

@@ -13,7 +13,8 @@ import { CensusCountyClient } from './CensusCountyClient';
 export default {
   name: 'Map',
   props: {
-    countyReference: CensusCountyReference
+    countyReference: CensusCountyReference,
+    chosenCountyReference: CensusCountyReference
   },
   data() {
     return {
@@ -23,14 +24,8 @@ export default {
     }
   },
   mounted() {
-    this.map = L.map("map");
-    L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
-      attribution:
-        '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(this.map);
+    this.map = this.initializeMap();
     this.countyLayerGroup = L.layerGroup().addTo(this.map);
-    this.map.setView([44,-116.5],3);
-    this.map.on('click', this.getCountyFromClick);
     this.countyClient = new CensusCountyClient('https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1');
   },
   watch: {
@@ -67,6 +62,7 @@ export default {
       return L.polygon(latlngs, {color: 'red'});
     },
     getCountyFromClick: async function (e) {
+      console.log("Hey!")
       // TODO: Figure a way to isolate this to single clicks
       // https://stackoverflow.com/questions/29035896/leaflet-dont-fire-click-event-function-on-doubleclick
       if (e.originalEvent.altKey || e.originalEvent.ctrlKey || e.originalEvent.shiftKey) {
@@ -83,7 +79,20 @@ export default {
      */
     returnCounty: function(countyReference) {
       console.log(`In returnCounty with ${countyReference.FullName}`);
-      this.$emit('update:countyReference', countyReference);
+      this.$emit('update:chosenCountyReference', countyReference);
+    },
+    /**
+     * Set up the map during component initialization
+     */
+    initializeMap: function () {
+      const map = L.map("map");
+      L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
+        attribution:
+          '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+      map.setView([44,-116.5],3);
+      map.on('click', this.getCountyFromClick);    
+      return map;
     }
   },
   beforeDestroy() {
