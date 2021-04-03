@@ -85,6 +85,11 @@ div#MapDiv {
 }
 
 div#ChartDiv {
+  position: absolute;
+  width: 500px;
+  height: 5000px;
+  left: 42vw;
+  top: 100px;
   z-index: 500;
 }
 </style>
