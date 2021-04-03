@@ -18,15 +18,10 @@
 <script>
 import Map from './components/Map.vue'
 import CountyPicker from './components/CountyPicker.vue'
-import { MapExtent } from "./components/MapExtent"
 
 export default {
   data() {
     return {
-      latitude: 44,
-      longitude: -116.5,
-      zoomLevel: 3,
-      mapTitle: 'Nothing Yet',
       countyReference: undefined
     }
   },
@@ -34,11 +29,6 @@ export default {
   components: {
     Map,
     CountyPicker
-  },
-  computed: {
-    mapExtent: function () {
-      return new MapExtent (this.latitude, this.longitude, this.zoomLevel);
-    }
   },
   methods: {
   },
