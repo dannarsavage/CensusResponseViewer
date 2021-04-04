@@ -13,8 +13,8 @@ import { CensusCountyClient } from './CensusCountyClient';
 export default {
   name: 'Map',
   props: {
-    countyReference: CensusCountyReference,
-    chosenCountyReference: CensusCountyReference
+    countyReference: CensusCountyReference,       // County chosen by user -- used by other components to communicate with this one
+    chosenCountyReference: CensusCountyReference  // County chosen by user clicking on the map -- used to emit events to other components
   },
   data() {
     return {
@@ -30,6 +30,10 @@ export default {
     this.countyClient = new CensusCountyClient('https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1');
   },
   watch: {
+    /**
+     * Watches for new counties selected by user and updates the map to reflect updated values 
+     * @param   {CensusCountyReference}      val    Info for county selected by user
+     */
     countyReference: async function (val) {
       if (val) {
         this.setCounty(val);
@@ -37,12 +41,19 @@ export default {
     }
   },
   methods: {
+    /**
+     * Removes the county shape from the map
+     */
     clearCounties: function () {
       this.countyLayerGroup.eachLayer ( (layer) => {
           layer.removeFrom(this.countyLayerGroup);
         }
       );
     },
+    /**
+     * Clears the previous county from the map and places the new county shape
+     * @param   {CensusCountyReference}      countyReference    Info for county to be added to map
+     */
     setCounty: async function (countyReference) {
       this.clearCounties();
       if (countyReference.Shape === null) {
@@ -52,11 +63,19 @@ export default {
       countyShape.addTo(this.countyLayerGroup);
       this.map.flyToBounds(countyShape.getBounds());
     },
+    /**
+     * Retrieves a shape (as an Esri polygon) for a given county
+     * @param   {CensusCountyReference}      countyReference    Info for county to be retrieved
+     */
     retrieveShape: async function(countyReference) {
       const countyReturn = await this.countyClient.getCountyByStateAndCountyId (
       countyReference.StateId, countyReference.CountyId, true);
       return countyReturn.Shape;
     },
+    /**
+     * Converts an esri polygon to a Leafelet polygon 
+     * @param   {object}      esriPolygon    Esri polygon to be converted
+     */
     convertEsriPolygonToLeaflet: function (esriPolygon) {
       const ring = esriPolygon.rings[0];
       const latlngs = [];
@@ -123,6 +142,9 @@ export default {
       return map;
     }
   },
+  /**
+   * Removes the map to conserve memory (I guess)
+   */
   beforeDestroy() {
     if (this.map) {
       this.map.remove();

@@ -16,7 +16,7 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 export default {
   name: 'Chart',
   props: {
-    countyReference: CensusCountyReference
+    countyReference: CensusCountyReference  // County whose data needs to be charted
   },
   data() {
     return {
@@ -31,6 +31,10 @@ export default {
     this.chart = this.initializeChart(); 
   },
   watch: {
+    /**
+     * Watch the countyReference prop for changes to change chart
+     * @param   {CensusCountyReference}      val    County to chart
+     */
     countyReference: async function (val) {
       if (val) {
         this.setCounty(val);
@@ -38,13 +42,19 @@ export default {
     }
   },
   methods: {
+    /**
+     * Emit an event that the county has been updated
+     * @param   {CensusCountyReference}      val    County information to chart
+     */
     setCounty: async function (val) {
-      // TODO: Get data from the census for the county and use it to update the chart
       this.responseInfo = await this.responseClient.getResponseRateForCountyAndState(val);
       document.getElementById("title").innerText = `2020 Census Response Rates for ${val.FullName}`;
       await this.setChartData(this.responseInfo);
-      //console.log(`${this.responseInfo.Name}: ${this.responseInfo.CumulativeTotalResponseRate}`);
     },
+    /**
+     * Replace chart data with new county's data
+     * @param   {CensusResponseRateInformation}      data    County data to chart
+     */
     setChartData: async function(data) {
       const totalResponseRate = data.CumulativeTotalResponseRate;
       const internetResponseRate = data.CumulativeInternetResponseRate;
@@ -61,25 +71,31 @@ export default {
         "responseType": "Internet",
         "responseRate": internetResponseRate
       }];
-   },
-   initializeChart: function() {
-    const chart = am4core.create("chart", am4charts.PieChart);
-    // Add and configure Series
-    let pieSeries = chart.series.push(new am4charts.PieSeries());
-    pieSeries.dataFields.value = "responseRate";
-    pieSeries.dataFields.category = "responseType";
-    pieSeries.slices.template.stroke = am4core.color("#fff");
-    pieSeries.slices.template.strokeOpacity = 1;
+    },
+    /**
+     * Sets up an empty chart ready to receive data
+     */
+    initializeChart: function() {
+      const chart = am4core.create("chart", am4charts.PieChart);
+      // Add and configure Series
+      let pieSeries = chart.series.push(new am4charts.PieSeries());
+      pieSeries.dataFields.value = "responseRate";
+      pieSeries.dataFields.category = "responseType";
+      pieSeries.slices.template.stroke = am4core.color("#fff");
+      pieSeries.slices.template.strokeOpacity = 1;
 
-    // This creates initial animation
-    pieSeries.hiddenState.properties.opacity = 1;
-    pieSeries.hiddenState.properties.endAngle = -90;
-    pieSeries.hiddenState.properties.startAngle = -90;
+      // This creates initial animation
+      pieSeries.hiddenState.properties.opacity = 1;
+      pieSeries.hiddenState.properties.endAngle = -90;
+      pieSeries.hiddenState.properties.startAngle = -90;
 
-    chart.hiddenState.properties.radius = am4core.percent(0);
-    return chart;
-   }
+      chart.hiddenState.properties.radius = am4core.percent(0);
+      return chart;
+    }
   },
+  /**
+   * Removes the chart to conserve memory (I guess)
+   */
   beforeDestroy() {
     if (this.chart) {
       this.chart = null;
