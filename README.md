@@ -1,5 +1,7 @@
 # Census Response Viewer
-A trivial project for trying out JavaScript libraries & techniques.
+User guide (such as it is) can be found [here](./UserGuide.md).
+
+Allows users to view county-level data regarding census response rates--shows the county on a map and delivers response rate info as a simple pie chart. Meant to be a trivial project for trying out JavaScript libraries & techniques.
 
 ## Project setup
 ```
