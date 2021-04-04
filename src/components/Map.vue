@@ -65,7 +65,6 @@ export default {
       return L.polygon(latlngs, {color: 'red'});
     },
     getCountyFromClick: async function (e) {
-      console.log("Hey!")
       // TODO: Figure a way to isolate this to single clicks
       // https://stackoverflow.com/questions/29035896/leaflet-dont-fire-click-event-function-on-doubleclick
       if (e.originalEvent.altKey || e.originalEvent.ctrlKey || e.originalEvent.shiftKey) {
@@ -74,14 +73,13 @@ export default {
       const latitude = e.latlng.lat;
       const longitude = e.latlng.lng;
       const countyReturn = await this.countyClient.getCountyAtLatLong (latitude, longitude, true);
-      this.returnCounty(countyReturn);
+      this.emitCounty(countyReturn);
     },
     /**
      * Emit an event that the county has been updated
      * @param   {CensusCountyReference}      countyReference    County information to return
      */
-    returnCounty: function(countyReference) {
-      console.log(`In returnCounty with ${countyReference.FullName}`);
+    emitCounty: function(countyReference) {
       this.$emit('update:chosenCountyReference', countyReference);
     },
     /**
@@ -94,7 +92,7 @@ export default {
           '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
       }).addTo(map);
       map.setView([44,-116.5],3);
-      map.on('click', this.getCountyFromClick);    
+      map.on('click', this.getCountyFromClick);
       return map;
     }
   },
