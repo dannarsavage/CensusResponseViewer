@@ -44,17 +44,20 @@ export default {
     },
     setCounty: async function (countyReference) {
       this.clearCounties();
-//      if (countyReference.Shape === null) {
+      if (countyReference.Shape === null) {
         countyReference.Shape = await this.retrieveShape(countyReference);
-  //    }
-      countyReference.Shape.addTo(this.countyLayerGroup);
-      this.map.flyToBounds(countyReference.Shape.getBounds());
+      }
+      const countyShape = this.convertEsriPolygonToLeaflet(countyReference.Shape);
+      countyShape.addTo(this.countyLayerGroup);
+      this.map.flyToBounds(countyShape.getBounds());
     },
     retrieveShape: async function(countyReference) {
       const countyReturn = await this.countyClient.getCountyByStateAndCountyId (
       countyReference.StateId, countyReference.CountyId, true);
-      // TODO: Do the work of converting from an Esri geometry to a leaflet geometry somewhere else
-      const ring = countyReturn.Shape.rings[0];
+      return countyReturn.Shape;
+    },
+    convertEsriPolygonToLeaflet: function (esriPolygon) {
+      const ring = esriPolygon.rings[0];
       const latlngs = [];
       ring.forEach(element => {
         latlngs.push([element[1],element[0]]);
