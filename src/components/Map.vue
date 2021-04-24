@@ -77,17 +77,11 @@ export default {
      * @param   {object}      esriPolygon    Esri polygon to be converted
      */
     convertEsriPolygonToLeaflet: function (esriPolygon) {
+      const ring = esriPolygon.rings[0];
       const latlngs = [];
-      if (!esriPolygon){ console.warn("GOTNUTHIN"); return; }
-      if (esriPolygon.rings) {  // If the "rings" property is present then this is an esri Polygon. Otherwise it's a Geometry
-        const ring = esriPolygon.rings[0];
-        ring.forEach(element => {
-          latlngs.push([element[1],element[0]]);
-        });
-      }
-      else {
-        console.warn(esriPolygon.coordinates);
-      }
+      ring.forEach(element => {
+        latlngs.push([element[1],element[0]]);
+      });
       return L.polygon(latlngs, {color: 'red'});
     },
     /**

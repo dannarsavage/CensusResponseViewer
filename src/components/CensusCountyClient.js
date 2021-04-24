@@ -1,18 +1,15 @@
 import { CensusCountyReference } from "./CensusCountyReference";
 import { CensusStateClient } from "./CensusStateClient";
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-//import Point from '@arcgis/core/geometry/Point';
-import {FeatureLayerService/*, Query*/}  from 'esri-leaflet';
-import L from "leaflet";
+import Point from '@arcgis/core/geometry/Point';
 
 /**
  * API client to retrieve county information from latitude and longitude
  */
  export class CensusCountyClient {
     constructor (url) {
-        this.featureLayerService = new FeatureLayerService({url: url});
         this.featureLayer = new FeatureLayer({url: url});
-        //this.baseUrl = url;  // https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1
+        this.baseUrl = url;  // https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1
         this.stateClient = new CensusStateClient('https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/0');
     }
 
@@ -25,22 +22,13 @@ import L from "leaflet";
     async getCountyByStateAndCountyId (stateId, countyId, returnGeometry = false) {
         const state = `${stateId}`.padStart(2, "0");    // StateIds in this API are always two characters long
         const county = `${countyId}`.padStart(3, "0");  // CountyIds in this API are always two characters long
-        const whereClause = `STATE = ${state} and COUNTY = ${county}`;
-        const q = this.featureLayerService.query();
-        q.where(whereClause);
-        q.returnGeometry(returnGeometry);
-        this.thingy = null;
-        q.run(async function (error, featureCollection) {
-          if (error) {
-            console.log(error);
-            return;
-          }
-
-          const feature = featureCollection.features[0];
-          this.thingy = await this.makeReferenceFromFeature2(feature);
-        }, this);
-        console.log(this.thingy);
-        return this.thingy;
+        const query = this.featureLayer.createQuery();
+        query.where = `STATE = ${state} and COUNTY = ${county}`;
+        query.outFields = ['COUNTY', 'STATE', 'NAME'];
+        query.outSpatialReference = { wkid: 4326 };
+        query.returnGeometry = returnGeometry
+        const response = await this.featureLayer.queryFeatures(query);
+        return await this.makeReferenceFromFeature(response.features[0]);
     }
 
     /**
@@ -50,21 +38,23 @@ import L from "leaflet";
      * @param {Boolean} returnGeometry  Whether or not to return geometries (default to false since they're expensive)
      */
     async getCountyAtLatLong (latitude, longitude, returnGeometry = false) {
-        const q = this.featureLayerService.query();
-        q.fields(['COUNTY', 'STATE', 'NAME']);
-        q.intersects(L.latLng(latitude,longitude));
-        q.returnGeometry(returnGeometry);
-        this.thingy = null;
-        q.run(async function (error, featureCollection) {
-          if (error) {
-            console.warn(error);
-            return;
-          }
-          const feature = featureCollection.features[0];
-          this.thingy = await this.makeReferenceFromFeature2(feature);
-        }, this);
-        console.log(this.thingy);
-        return this.thingy;
+        const pointProperties = {
+            latitude: latitude, 
+            longitude: longitude,
+            spatialReference: {
+                wkid: 4326
+            }
+        };
+        const point = new Point(pointProperties);
+        const query = this.featureLayer.createQuery();
+        //const geom = `{ "x": ${longitude}, "y": ${latitude}, "spatialReference": { "wkid": 4326 } }`;  // TODO: Turn the lat/lon into a shape digestible by this API
+        query.outFields = ['COUNTY', 'STATE', 'NAME'];
+        query.geometry = point;
+        query.spatialRelationship = "intersects";
+        query.returnGeometry = returnGeometry
+        query.outSpatialReference = { wkid: 4326 };
+        const response = await this.featureLayer.queryFeatures(query);
+        return await this.makeReferenceFromFeature(response.features[0]);
     }
 
     /**
@@ -97,25 +87,6 @@ import L from "leaflet";
     async makeReferenceFromFeature (feature) {
         const apiReturn = feature.attributes;
         const stateName = await this.getStateNameByStateId(apiReturn.STATE);
-        return new CensusCountyReference(
-            apiReturn.STATE,
-            apiReturn.COUNTY,
-            apiReturn.NAME,
-            stateName,
-            feature.geometry
-        );
-    }
-
-    /**
-     * Take one feature from the service and turn it into a CensusCountyReference
-     * @param {object} feature     One feature from the map service
-     */
-    async makeReferenceFromFeature2 (feature) {
-        const apiReturn = feature.properties;
-        const stateName = await this.getStateNameByStateId(apiReturn.STATE);
-        if (!feature.geometry) {
-            console.warn("NO GEOMETRY");
-        }
         return new CensusCountyReference(
             apiReturn.STATE,
             apiReturn.COUNTY,
