@@ -9,7 +9,7 @@
       </div>
     </div>
     <div id="MapDiv">
-      <Map 
+      <CountyMap 
         v-bind:chosenCountyReference.sync="chosenCounty"
         v-bind:countyReference.sync="chosenCounty" />
     </div>
@@ -22,7 +22,7 @@
 
 <script>
 import Chart from './components/Chart.vue'
-import Map from './components/Map.vue'
+import CountyMap from './components/Map copy.vue'
 import CountyPicker from './components/CountyPicker.vue'
 
 export default {
@@ -33,7 +33,7 @@ export default {
   },
   name: 'App',
   components: {
-    Map,
+    CountyMap,
     CountyPicker,
     Chart
   },

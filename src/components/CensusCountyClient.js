@@ -21,7 +21,7 @@ import Point from '@arcgis/core/geometry/Point';
      */
     async getCountyByStateAndCountyId (stateId, countyId, returnGeometry = false) {
         const state = `${stateId}`.padStart(2, "0");    // StateIds in this API are always two characters long
-        const county = `${countyId}`.padStart(3, "0");  // CountyIds in this API are always two characters long
+        const county = `${countyId}`.padStart(3, "0");  // CountyIds in this API are always three characters long
         const query = this.featureLayer.createQuery();
         query.where = `STATE = ${state} and COUNTY = ${county}`;
         query.outFields = ['COUNTY', 'STATE', 'NAME'];

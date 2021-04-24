@@ -10,14 +10,12 @@
         stateId = '',
         countyId = '',
         name = '',
-        state = '',
-        shape = null
+        state = ''
     ) {
         this.StateId = stateId;
         this.CountyId = countyId;
         this.Name = name;
         this.State = state;
-        this.Shape = shape;
     }
 
     get key() {
