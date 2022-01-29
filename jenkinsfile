@@ -1,0 +1,57 @@
+pipeline {
+  agent any
+  stages {
+
+    stage('NPM install') {
+      steps {
+        script {
+          npm install
+        }
+      }
+    }
+
+    stage('Lint') {
+      steps {
+        script {
+          npm run lint
+        }
+      }
+    }
+
+    stage('Run tests') {
+      steps {
+        script {
+          npm run test
+        }
+      }
+    }
+
+    stage('Compile & minify for production') {
+      steps {
+        script {
+          npm run build
+        }
+      }
+    }
+
+  }
+  
+  post {
+    always {
+      script {
+        echo 'Done'
+      }
+    }
+    success {
+      script {
+        echo 'post.success'
+      }
+    }
+    failure {
+      script {
+        echo 'Oops! I should let someone know about this!'
+      }
+    }
+  }
+  
+}
