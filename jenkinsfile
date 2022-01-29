@@ -37,7 +37,7 @@ pipeline {
     success {
       script {
         echo 'Yay!'
-		archiveArtifacts artifacts: '.\\dist\\**\\*.*', followSymlinks: false
+		archiveArtifacts artifacts: 'dist/**/*.*', followSymlinks: false
       }
     }
     failure {
